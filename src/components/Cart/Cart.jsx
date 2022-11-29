@@ -46,4 +46,5 @@ const Cart = ({ cart, handleUpdateCartQty, handleRemoveFromCart, handleEmptyCart
     )
 };
 
+
 export default Cart;
