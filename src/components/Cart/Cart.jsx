@@ -14,6 +14,7 @@ const Cart = ({ cart, handleUpdateCartQty, handleRemoveFromCart, handleEmptyCart
         </Typography>
     );
 
+
     const FilledCart = () => (
         <>
             <Grid container spacing={3}>
