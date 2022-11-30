@@ -11,11 +11,11 @@ export default makeStyles((theme) => ({
       marginBottom: '5px',
     },
     [theme.breakpoints.up('xs')]: {
-      marginRight: '20px',
+      marginRight: '20px', 
     },
   },
   
-  checkoutButton: {
+  checkoutButton: {   
     minWidth: '150px',
   },
   link: {
