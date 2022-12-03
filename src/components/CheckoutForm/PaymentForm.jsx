@@ -1,6 +1,6 @@
 import React from 'react'
 
-const PaymentForm = () => {
+const PaymentForm = ({ checkoutToken }) => {
   return (
     <div>PaymentForm</div>
   )
