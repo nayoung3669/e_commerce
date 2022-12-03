@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { InputLabel, Select, MenuItem, Button, Grid, Typography } from '@material-ui/core';
 import { useForm, FormProvider } from 'react-hook-form';
 
-import { commerce } from '../../lib/commerce'
+import { commerce } from '../../lib/commerce';
+import FormInput from './Checkout/CustomTextField';
+import PaymentForm from './PaymentForm';
 
-import FormInput from './Checkout/CustomTextField'
 
 const AddressForm = ({ checkoutToken }) => {
     const [shippingCountries, setShippingCountries] = useState([]);
@@ -17,7 +18,7 @@ const AddressForm = ({ checkoutToken }) => {
 
     const countries = Object.entries(shippingCountries).map(([code,name])=> ({id:code, label:name}));
     const subdivisions = Object.entries(shippingSubdivisions).map(([code, name])=>({id:code, label:name}));
-    // const options = Object.entries([shippingOptions].map(()=> ));
+    const options = shippingOptions.map((sO) => ({id: sO.id, label:`${sO.description}-(${sO.price.formatted_with_symbol})`}));
 
     const fetchShippingCountries = async (checkoutTokenId) => {
         const { countries } = await commerce.services.localeListShippingCountries(checkoutTokenId);
@@ -34,9 +35,10 @@ const AddressForm = ({ checkoutToken }) => {
     }
 
     const fetchShippingOptions = async (checkoutTokenId,country,region = null) => {
-        const { options } = await commerce.checkout.getShippingOptions(checkoutTokenId,{country,region})
-        
+        const options = await commerce.checkout.getShippingOptions(checkoutTokenId,{country,region})
+
         setShippingOptions(options);
+        setShippingOption(options[0].id)
     }
 
     useEffect(() => {
@@ -49,11 +51,11 @@ const AddressForm = ({ checkoutToken }) => {
 
     useEffect(() => {
         if(shippingSubdivision) fetchShippingOptions(checkoutToken.id,shippingCountry,shippingSubdivision)
-        console.log(shippingOptions)
     }, [shippingSubdivision]);
 
     return (
         <>
+        
             <Typography variant='h6' gutterbottom>Shipping Address</Typography>
             <FormProvider {...methods}>
                 <form onSubmit=''>
@@ -66,13 +68,12 @@ const AddressForm = ({ checkoutToken }) => {
                         <FormInput required name="postalCode" label='Postal code' />
                         <Grid item xs={12} sm={6}>
                             <InputLabel>Shipping Country</InputLabel>
-                            <Select value={shippingCountry} fullWidth onChange={(e) => setShippingCountry(e.target.value)}>;
+                            <Select value={shippingCountry} defaultValue='none' fullWidth onChange={(e) => setShippingCountry(e.target.value)}>;
                                 {countries.map((country)=> (
                                     <MenuItem key={country.id} value={country.id}>
                                         {country.label}
                                     </MenuItem>
                                 ))}
-
                             </Select>
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -85,15 +86,18 @@ const AddressForm = ({ checkoutToken }) => {
                                 ))}
                             </Select>
                         </Grid>
-                        {/* <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6}>
                             <InputLabel>Shipping Options</InputLabel>
-                            <Select value={shippingOptions} fullWidth onChange={(e) => setShippingOption(e.target.value)}>
-                                <MenuItem key={} value={}>
-                                    Select Me
-                                </MenuItem>
+                            <Select value={shippingOption} fullWidth onChange={(e) => setShippingOption(e.target.value)}>
+                                {options.map((option)=> (
+                                    <MenuItem key={option.id} value={option.id}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
                             </Select>
-                        </Grid> */}
+                        </Grid>
                     </Grid>
+                    <Button onClick={() => <PaymentForm />}>Next</Button>
                 </form>
             </FormProvider>
         </>
