@@ -13,7 +13,7 @@ const Cart = ({ cart, handleUpdateCartQty, handleRemoveFromCart, handleEmptyCart
             <Link to="/" className={classes.link}> Start adding some</Link>!
         </Typography>
     );
-
+    
 
     const FilledCart = () => (
         <>

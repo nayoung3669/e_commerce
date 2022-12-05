@@ -3,11 +3,11 @@ import { Typography, Button, Divider } from '@material-ui/core'
 import { Elements, CardElement, ElementsConsumer} from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
-import Review from './Review';
+import Review from './Checkout/Review';
 
-  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
-  const PaymentForm = ({ checkoutToken, nextStep, backStep, shippingData, onCaptureCheckout }) => {
+  const PaymentForm = ({ checkoutToken, nextStep, backStep, shippingData, onCaptureCheckout, cart }) => {
     const handleSubmit = async (event, elements, stripe) => {
       event.preventDefault();
 
@@ -21,7 +21,7 @@ import Review from './Review';
         console.log(error.message)
       } else {
         const orderData = {
-          line_items: checkoutToken.line_items,
+          line_items: cart.line_items,
           customer : {firstname: shippingData.firstname, lastname: shippingData.lastname, email: shippingData.email},
           shipping: { 
             name: 'Primary', 
@@ -29,43 +29,48 @@ import Review from './Review';
             town_city: shippingData.city,
             country_state: shippingData.shippingSubdivision,
             country: shippingData.shippingCountry,
-        },
-        fulfillment: { shipping_method: shippingData.shippingOption },
-        payment: {
-          gateway: 'stripe',
-          stripe: {
-            payment_method_id: paymentMethod.id
-          }
-        }
-      }
-      onCaptureCheckout(checkoutToken, orderData);  
-      nextStep();
-    } 
+          },
+          fulfillment: { shipping_method: shippingData.shippingOption },
+          payment: {
+            gateway: 'stripe',
+            stripe: {
+              payment_method_id: paymentMethod.id
+            },
+          },
+        };
 
-    return (
-      <>
-        <Review checkoutToken={checkoutToken} />
-        <Divider  />
-        <Typography variant='h6' gutterBottom style={{ margin: '20px 0'}}>Payment method</Typography>
-        <Elements stripe={stripePromise}>
-          <ElementsConsumer>
-            {({ elements, stripe })=> (
-                <form onSubmit={(e) => handleSubmit(e, elements, stripe) }>
-                  <CardElement />
-                  <br /> <br />
-                  <div style={{ display: 'flex', justifyContent: 'space-between'}}>
-                    <Button variant = "outlined" onClick={backStep}>Back</Button>
-                    <Button type="submit" variant="contained" disabled={!stripe} color="primary" >
-                        Pay {checkoutToken.subtotal.formatted_with_symbol }
-                    </Button>
-                  </div>
-                </form>
-            )}
-          </ElementsConsumer>
-        </Elements>
-      </>
-      );
-    }
-  }
+        onCaptureCheckout(checkoutToken.id, orderData);  
+
+        nextStep();
+
+        console.log("PaymentForm: ")
+        console.log(checkoutToken)
+    } 
+  };
+
+  return (
+    <>
+      <Review checkoutToken={checkoutToken} cart={cart}  />
+      <Divider  />
+      <Typography variant='h6' gutterBottom style={{ margin: '20px 0'}}>Payment method</Typography>
+      <Elements stripe={stripePromise}>
+        <ElementsConsumer>
+          {({ elements, stripe })=> (
+              <form onSubmit={(e) => handleSubmit(e, elements, stripe) }>
+                <CardElement />
+                <br /> <br />
+                <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+                  <Button variant = "outlined" onClick={backStep}>Back</Button>
+                  <Button type="submit" variant="contained" disabled={!stripe} color="primary" >
+                      Pay {checkoutToken.subtotal.formatted_with_symbol }
+                  </Button>
+                </div>
+              </form>
+          )}
+        </ElementsConsumer>
+      </Elements>
+    </>
+    );
+  };
 
 export default PaymentForm

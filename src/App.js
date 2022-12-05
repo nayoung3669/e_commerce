@@ -3,6 +3,8 @@ import { commerce } from './lib/commerce';
 import { Navbar, Products, Checkout, Cart } from './components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
+
+
 const App = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState({});
@@ -66,6 +68,7 @@ const App = () => {
     fetchProducts();
     fetchCart();
   }, []); 
+  
   
   return (
     <Router>
