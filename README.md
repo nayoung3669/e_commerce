@@ -8,7 +8,7 @@ Customers have the options to purchase their electronics such as laptop, headpho
 
 ---
 
-## Featuress
+## Features
 
 - Products Features
   1. Add products
