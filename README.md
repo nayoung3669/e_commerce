@@ -1,6 +1,6 @@
 # E Commerce Website (React)
 
-This project is a E-Commerce Website built with Commerce.js for shopping electronics using React, Commerce.js and Stripe. The reason that I created this repository is for education by self.
+This project is a E-Commerce Website built with Commerce.js for shopping electronics using React, Commerce.js and Stripe. The reason that I created this repository is for education by Youtube.
 
 ## Description
 
